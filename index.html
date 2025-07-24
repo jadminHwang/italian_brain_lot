@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#34495e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>이탈리안 브레인 롯 이름 맞추기 게임</title>
+  <style>
+    :root {
+      --color-primary: #34495e;
+      --color-secondary: #d63031;
+      --color-accent: #0984e3;
+      --color-text: #2d3436;
+      --color-background: #dfe6e9;
+      --color-card-bg: #ffffff;
+      --color-border: #b2bec3;
+      --color-correct: #00b894;
+      --color-wrong: #d63031;
+      --color-timer: #e17055;
+      --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      --gradient-secondary: linear-gradient(135deg, var(--color-secondary), #fd79a8);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans KR', 'Arial', sans-serif;
+    }
+    
+    html, body {
+      height: auto;
+      overflow: auto;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background-color: var(--color-background);
+      color: var(--color-text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 8px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 40px);
+    }
+    
+    h1 {
+      margin-bottom: 3px;
+      font-size: 1.8rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 1px;
+      font-weight: 700;
+      position: relative;
+      display: inline-block;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 2px;
+      background: var(--gradient-primary);
+      border-radius: 3px;
+    }
+    
+    h2 {
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+      background: var(--gradient-secondary);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 600;
+    }
+    
+    .game-container {
+      background-color: var(--color-card-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: visible;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+    }
+    
+    .game-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+      animation: gradientMove 5s ease infinite;
+      background-size: 200% 200%;
+    }
+    
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .share-container {
+      margin-top: 15px;
+      margin-bottom: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    
+    .share-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #FEE500;
+      color: #181600;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .share-button:hover {
+      background-color: #FDD835;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .share-button:active {
+      transform: translateY(0);
+    }
+    
+    .timer-container {
+      background: var(--gradient-primary);
+      border-radius: 20px;
+      padding: 4px 8px;
+      margin: 0 auto 8px;
+      width: fit-content;
+      color: white;
+      font-weight: bold;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+    
+    .timer-icon {
+      margin-right: 5px;
+      animation: pulse-timer 1s infinite;
+    }
+    
+    @keyframes pulse-timer {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+    
+    .timer-progress {
+      width: 100%;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    
+    .timer-progress-bar {
+      height: 100%;
+      background-color: white;
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+    
+    .timer-setting {
+      margin: 3px auto 6px;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    
+    .timer-setting select {
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-card-bg);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .character-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 20px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      flex-shrink: 0;
+      height: 350px;
+    }
+    
+    .character-image {
+      max-width: 320px;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, opacity 0.2s ease;
+      opacity: 1;
+      object-fit: contain;
+      /* 상단 캐릭터 이름 텍스트 부분을 잘라내기 */
+      clip-path: inset(8% 0 0 0);
+      margin-top: -4%;
+    }
+    
+    .character-image:hover {
+      transform: scale(1.02);
+    }
+    
+    .options-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+      flex: 1;
+      align-items: start;
+      align-content: start;
+      min-height: 120px;
+      overflow: visible;
+    }
+    
+    .option-button {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border: 2px solid var(--color-primary);
+      border-radius: 12px;
+      padding: 15px 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+      line-height: 1.2;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    
+    .option-button:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .option-button:hover {
+      background-color: var(--color-secondary);
+      color: white;
+      border-color: var(--color-secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .option-button:hover:before {
+      left: 100%;
+    }
+    
+    .option-button.correct {
+      background-color: var(--color-correct);
+      color: white;
+      border-color: var(--color-correct);
+      animation: pulse 1s;
+    }
+    
+    .option-button.wrong {
+      background-color: var(--color-wrong);
+      color: white;
+      border-color: var(--color-wrong);
+      animation: shake 0.5s;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    
+    .score-container {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      background-color: var(--color-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 25px;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .next-button {
+      background-color: var(--color-accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      align-self: center;
+    }
+    
+    .next-button:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: 0.5s;
+    }
+    
+    .next-button:hover {
+      background-color: var(--color-secondary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .next-button:hover:before {
+      left: 100%;
+    }
+    
+    .result-container {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    
+    .result-container.correct {
+      background-color: rgba(0, 184, 148, 0.15);
+      color: var(--color-correct);
+    }
+    
+    .result-container.wrong {
+      background-color: rgba(214, 48, 49, 0.15);
+      color: var(--color-wrong);
+    }
+    
+    .result-icon {
+      font-size: 1.2rem;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    .result-text {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 600px) {
+      body {
+        padding: 8px 5px;
+      }
+      
+      .container {
+        max-width: 100%;
+        min-height: calc(100vh - 16px);
+      }
+      
+      h1 {
+        font-size: 1.3rem;
+        margin-bottom: 0;
+      }
+      
+      h2 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+      }
+      
+      .game-container {
+        padding: 10px;
+        margin-bottom: 8px;
+        min-height: auto;
+      }
+      
+      .character-image {
+        max-width: 240px;
+        width: 100%;
+        clip-path: inset(8% 0 0 0);
+        margin-top: -4%;
+      }
+      
+      .character-container {
+        margin-bottom: 10px;
+        height: 260px;
+      }
+      
+      .options-container {
+        gap: 12px;
+        margin-top: 15px;
+        min-height: auto;
+        grid-template-columns: 1fr;
+      }
+      
+      .option-button {
+        padding: 14px 10px;
+        font-size: 0.9rem;
+        min-height: 50px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      
+      .timer-container {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+        margin-bottom: 5px;
+      }
+      
+      .timer-setting {
+        font-size: 0.7rem;
+        margin: 2px auto 4px;
+      }
+      
+      .score-container {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+      }
+      
+      .share-button {
+        font-size: 0.8rem;
+        padding: 8px 15px;
+      }
+      
+      .share-container {
+        margin-top: 10px;
+        margin-bottom: 8px;
+      }
+      
+      .result-container {
+        margin-top: 8px;
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 0.85rem;
+        border-radius: 10px;
+      }
+      
+      .next-button {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
+    
+    /* 매우 작은 모바일 화면을 위한 추가 미디어 쿼리 */
+    @media (max-width: 360px) {
+      h1 {
+        font-size: 1.2rem;
+      }
+      
+      h2 {
+        font-size: 0.9rem;
+      }
+      
+      .character-container {
+        height: 220px;
+      }
+      
+      .character-image {
+        max-width: 200px;
+      }
+      
+      .option-button {
+        padding: 12px 8px;
+        font-size: 0.85rem;
+        min-height: 46px;
+        font-weight: 700;
+      }
+      
+      .result-container {
+        font-size: 0.8rem;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+      
+      .timer-setting select {
+        font-size: 0.7rem;
+        padding: 2px 3px;
+      }
+      
+      .share-button {
+        width: 90%;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>이탈리안 브레인 롯</h1>
+    <h2>이름 맞추기</h2>
+    
+    <div class="game-container">
+      <div class="timer-container" id="timer-container">
+        <span class="timer-icon">⏱️</span>
+        <span id="timer-text">15초</span>
+        <div class="timer-progress">
+          <div class="timer-progress-bar" id="timer-progress-bar"></div>
+        </div>
+      </div>
+      
+      <div class="timer-setting">
+        <label for="timer-select">난이도:</label>
+        <select id="timer-select" onchange="changeTimerDifficulty()">
+          <option value="20">쉬움 (20초)</option>
+          <option value="15" selected>보통 (15초)</option>
+          <option value="10">어려움 (10초)</option>
+          <option value="5">전문가 (5초)</option>
+        </select>
+      </div>
+      
+      <div class="character-container">
+        <img id="character-image" class="character-image" src="" alt="이탈리아 브레인 롯 캐릭터">
+      </div>
+      
+      <div class="result-container" id="result">
+        <!-- 정답 결과가 여기에 표시됩니다 -->
+      </div>
+      
+      <div class="options-container" id="options">
+        <!-- 옵션 버튼이 여기에 생성됩니다 -->
+      </div>
+      
+      <button class="next-button" id="next-button">다음 캐릭터</button>
+    </div>
+    
+    <div class="score-container">
+      점수: <span id="score">0</span> / <span id="total">0</span>
+    </div>
+    
+    <div class="share-container">
+      <button id="share-button" class="share-button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+          <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.30295 15.038 5.59669 15.1094 5.87701L8.68234 9.53109C8.01741 8.61324 6.94554 8 5.75 8C3.67893 8 2 9.67893 2 11.75C2 13.8211 3.67893 15.5 5.75 15.5C6.94554 15.5 8.01741 14.8868 8.68234 13.9689L15.1094 17.623C15.038 17.9033 15 18.1971 15 18.5C15 20.1569 16.3431 21.5 18 21.5C19.6569 21.5 21 20.1569 21 18.5C21 16.8431 19.6569 15.5 18 15.5C16.8445 15.5 15.8726 16.1132 15.2077 17.0311L8.78063 13.377C8.85203 13.0967 8.89 12.8029 8.89 12.475C8.89 12.1471 8.85203 11.8533 8.78063 11.573L15.2077 7.91891C15.8726 8.83676 16.8445 9.45 18 9.45C19.6569 9.45 21 8.10685 21 6.45C21 4.79315 19.6569 3.45 18 3.45C16.3431 3.45 15 4.79315 15 6.45C15 6.75295 15.038 7.04669 15.1094 7.32701L8.68234 10.9811C8.01741 10.0632 6.94554 9.45 5.75 9.45C3.67893 9.45 2 11.1289 2 13.2C2 15.2711 3.67893 16.95 5.75 16.95Z" fill="currentColor"/>
+        </svg>
+        링크 공유하기
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 게임 데이터 (캐릭터 이름과 이미지 경로)
+    const characters = [
+      {
+        name: "에스프레소나 시뇨라",
+        image: "images/에스프레소나_시뇨라.png"
+      },
+      {
+        name: "발레리노 로로로",
+        image: "images/발레리노_로로로.png"
+      },
+      {
+        name: "엘레판투치 바나누치",
+        image: "images/엘레판투치_바나누치.png"
+      },
+      {
+        name: "레오넬리 칵투셀리",
+        image: "images/레오넬리_칵투셀리.png"
+      },
+      {
+        name: "시그마 보이",
+        image: "images/시그마_보이.png"
+      },
+      {
+        name: "오랑구티니 아나나시니",
+        image: "images/오랑구티니_아나나시니.png"
+      },
+      {
+        name: "그라이푸시 메두시",
+        image: "images/그라이푸시_메두시.png"
+      },
+      {
+        name: "리노 토스트리노",
+        image: "images/리노_토스트리노.png"
+      },
+      {
+        name: "붐바르디로 크로코딜로",
+        image: "images/붐바르디로_크로코딜로.png"
+      },
+      {
+        name: "부르발로니 룰릴롤리",
+        image: "images/부르발로니_룰릴롤리.png"
+      },
+      {
+        name: "고릴로 워터멜론드릴로",
+        image: "images/고릴로_워터멜론드릴로.png"
+      },
+      {
+        name: "글로르보 프루토드릴로",
+        image: "images/글로르보_프루토드릴로.png"
+      },
+      {
+        name: "마테오오오오오오오",
+        image: "images/마테오오오오오오오.png"
+      },
+      {
+        name: "바나니타 돌피니타",
+        image: "images/바나니타_돌피니타.png"
+      },
+      {
+        name: "보브리토 반디토",
+        image: "images/보브리토_반디토.png"
+      },
+      {
+        name: "브리 브리 비쿠스 디쿠스 봄비쿠스",
+        image: "images/브리_브리_비쿠스_디쿠스_봄비쿠스.png"
+      },
+      {
+        name: "블루베리니 옥토푸시니",
+        image: "images/블루베리니_옥토푸시니.png"
+      },
+      {
+        name: "스비니노 봄본디노",
+        image: "images/스비니노_봄본디노.png"
+      },
+      {
+        name: "알레시오오오오오",
+        image: "images/알레시오오오오오.png"
+      },
+      {
+        name: "알레시오오오오오오",
+        image: "images/알레시오오오오오오.png"
+      },
+      {
+        name: "오르칼레로 오르칼라",
+        image: "images/오르칼레로_오르칼라.png"
+      },
+      {
+        name: "일 각토 히포포타모",
+        image: "images/일_각토_히포포타모.png"
+      },
+      {
+        name: "카라마라라마라라만 단 마두둥둥 탁 툰퉁 퍼르쿤퉁",
+        image: "images/카라마라라마라라만_단_마두둥둥_탁_툰퉁_퍼르쿤퉁.png"
+      },
+      {
+        name: "치클레테이라 비시클레테이라",
+        image: "images/치클레테이라_비시클레테이라.png"
+      },
+      {
+        name: "지브라 주브라 지브라리니",
+        image: "images/지브라_주브라_지브라리니.png"
+      },
+      {
+        name: "카를로오오오오오",
+        image: "images/카를로오오오오오.png"
+      },
+      {
+        name: "코코판토 엘라판토",
+        image: "images/코코판토_엘라판토.png"
+      },
+      {
+        name: "크로코딜로 아나나시노",
+        image: "images/크로코딜로_아나나시노.png"
+      },
+      {
+        name: "크로크딜로 아나나시노",
+        image: "images/크로크딜로_아나나시노.png"
+      },
+      {
+        name: "팟 핫스팟",
+        image: "images/팟_핫스팟.png"
+      },
+      {
+        name: "타타타타타타타 사후르",
+        image: "images/타타타타타타타_사후르.png"
+      },
+      {
+        name: "토르투기니 드레곤푸루티니",
+        image: "images/토르투기니_드레곤푸루티니.png"
+      },
+      {
+        name: "톱 토비 톱 톱 토비 톱",
+        image: "images/톱_토비_톱_톱_토비_톱.png"
+      },
+      {
+        name: "트랄랄레로 트랄랄라",
+        image: "images/트랄랄레로_트랄랄라.png"
+      },
+      {
+        name: "트레코투코툴루 델라펠라두스투즈",
+        image: "images/트레코투코툴루_델라펠라두스투즈.png"
+      },
+      {
+        name: "티그룰리니 워터멜리니",
+        image: "images/티그룰리니_워터멜리니.png"
+      },
+      {
+        name: "트릭 트랙 바라붐",
+        image: "images/트릭_트랙_바라붐.png"
+      },
+      {
+        name: "티그룰리 그레이프루투니",
+        image: "images/티그룰리_그레이프루투니.png"
+      },
+      {
+        name: "트리파 트로파 트랄랄라 리릴리 릴라 퉁퉁 사후르 보네카 퉁퉁 트랄레로 트로파 크로코디나",
+        image: "images/트리파_트로파_트랄랄라_리릴리_릴라_퉁퉁_사후르_보네카_퉁퉁_트랄레로_트로파_크로코디나.png"
+      },
+      {
+        name: "티티티티티티티 사후르",
+        image: "images/티티티티티티티_사후르.png"
+      },
+      {
+        name: "펜다치니 바나니니",
+        image: "images/펜다치니_바나니니.png"
+      },
+      {
+        name: "푸시니 스시니",
+        image: "images/푸시니_스시니.png"
+      },
+      {
+        name: "펭구원노 코코시노",
+        image: "images/펭구원노_코코시노.png"
+      },
+      {
+        name: "프룰리 프룰라",
+        image: "images/프룰리_프룰라.png"
+      }
+    ];
+
+    // 게임 변수
+    let currentCharacterIndex = -1;
+    let score = 0;
+    let totalQuestions = 0;
+    let usedCharacterIndices = [];
+    
+    // 타이머 변수
+    let timerSeconds = 15; // 문제당 기본 시간 (초)
+    let timerInterval = null; // 타이머 인터벌 저장 변수
+    let remainingTime = timerSeconds; // 남은 시간
+
+    // DOM 요소
+    const characterImageElement = document.getElementById('character-image');
+    const optionsContainer = document.getElementById('options');
+    const resultElement = document.getElementById('result');
+    const nextButton = document.getElementById('next-button');
+    const scoreElement = document.getElementById('score');
+    const totalElement = document.getElementById('total');
+    const timerTextElement = document.getElementById('timer-text');
+    const timerProgressBarElement = document.getElementById('timer-progress-bar');
+
+    // 난이도 변경 함수
+    function changeTimerDifficulty() {
+      const timerSelect = document.getElementById('timer-select');
+      timerSeconds = parseInt(timerSelect.value);
+      
+      // 현재 타이머가 실행 중이라면 업데이트
+      if (timerInterval) {
+        stopTimer();
+        startTimer();
+      } else {
+        // 타이머가 실행 중이 아니라면 표시만 갱신
+        remainingTime = timerSeconds;
+        updateTimerDisplay();
+      }
+    }
+    
+    // 게임 초기화
+    function initGame() {
+      score = 0;
+      totalQuestions = 0;
+      usedCharacterIndices = [];
+      scoreElement.textContent = score;
+      totalElement.textContent = totalQuestions;
+      
+      // 타이머 초기화
+      const timerSelect = document.getElementById('timer-select');
+      timerSeconds = parseInt(timerSelect.value);
+      remainingTime = timerSeconds;
+      
+      // 캐릭터 배열 섞기 (초기 게임에서만)
+      shuffleArray(characters);
+      
+      // 이미지 초기화 (페이지 첫 로드 시 빈 이미지 방지)
+      if (!characterImageElement.src || characterImageElement.src === window.location.href) {
+        characterImageElement.src = characters[0].image;
+      }
+      
+      nextCharacter();
+    }
+
+    // 타이머 시작 함수
+    function startTimer() {
+      // 타이머가 이미 실행 중이면 초기화
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+      
+      // 타이머 초기화
+      remainingTime = timerSeconds;
+      updateTimerDisplay();
+      
+      // 타이머 진행바 초기화 및 애니메이션
+      timerProgressBarElement.style.width = '100%';
+      
+      // 1초마다 타이머 갱신
+      timerInterval = setInterval(() => {
+        remainingTime--;
+        updateTimerDisplay();
+        
+        // 시간이 다 되면 자동으로 오답 처리
+        if (remainingTime <= 0) {
+          clearInterval(timerInterval);
+          handleTimeUp();
+        }
+      }, 1000);
+    }
+    
+    // 타이머 표시 갱신 함수
+    function updateTimerDisplay() {
+      timerTextElement.textContent = `${remainingTime}초`;
+      
+      // 진행바 업데이트
+      const percentage = (remainingTime / timerSeconds) * 100;
+      timerProgressBarElement.style.width = `${percentage}%`;
+      
+      // 10초 이하로 남으면 빨간색으로 변경
+      if (remainingTime <= 5) {
+        timerProgressBarElement.style.backgroundColor = '#e74c3c';
+      } else {
+        timerProgressBarElement.style.backgroundColor = 'white';
+      }
+    }
+    
+    // 타이머 정지 함수
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+    
+    // 시간 초과 처리 함수
+    function handleTimeUp() {
+      // 옵션 클릭 비활성화
+      optionsContainer.style.pointerEvents = 'none';
+      
+      // 현재 캐릭터의 정답 이름 가져오기
+      const correctName = characters[currentCharacterIndex].name;
+      
+      // 시간 초과 메시지 표시
+      resultElement.innerHTML = `<div class="result-icon">⏱️</div><div class="result-text">시간 초과! 정답은 ${correctName}입니다.</div>`;
+      resultElement.className = 'result-container wrong';
+      
+      // 정답 버튼 하이라이트
+      const buttons = optionsContainer.querySelectorAll('.option-button');
+      buttons.forEach(button => {
+        if (button.textContent === correctName) {
+          button.classList.add('correct');
+        }
+        button.disabled = true;
+      });
+      
+      // 다음 버튼 표시
+      nextButton.style.display = 'inline-block';
+    }
+
+    // 다음 캐릭터 보여주기
+    function nextCharacter() {
+      // 모든 캐릭터를 다 사용했다면 게임 종료
+      if (usedCharacterIndices.length >= characters.length) {
+        showGameResult();
+        return;
+      }
+      
+      // 옵션 버튼 활성화
+      optionsContainer.style.pointerEvents = 'auto';
+      
+      // 결과 초기화
+      resultElement.innerHTML = '';
+      resultElement.className = 'result-container';
+      
+      // 다음 버튼 숨기기
+      nextButton.style.display = 'none';
+      
+      // 사용하지 않은 캐릭터 중에서 선택 (순차적으로)
+      const unusedIndices = [];
+      for (let i = 0; i < characters.length; i++) {
+        if (!usedCharacterIndices.includes(i)) {
+          unusedIndices.push(i);
+        }
+      }
+      
+      // 무작위 선택 대신 아직 사용되지 않은 첫 번째 캐릭터 선택
+      currentCharacterIndex = unusedIndices[0];
+      usedCharacterIndices.push(currentCharacterIndex);
+      
+      const currentCharacter = characters[currentCharacterIndex];
+      
+      // 즉시 이미지 설정
+      characterImageElement.src = currentCharacter.image;
+      
+      // 이미지 표시
+      characterImageElement.style.opacity = 1;
+      characterImageElement.style.transition = 'opacity 0.1s ease';
+      
+      // 옵션 생성
+      createOptions(currentCharacter.name);
+      
+      // 타이머 시작
+      startTimer();
+    }
+
+    // 옵션 버튼 생성
+    function createOptions(correctName) {
+      // 옵션 컨테이너 초기화
+      optionsContainer.innerHTML = '';
+      
+      // 정답과 오답 옵션 준비
+      const allNames = characters.map(char => char.name);
+      const wrongOptions = allNames.filter(name => name !== correctName);
+      
+      // 정답 옵션과 3개의 오답 옵션 선택
+      const options = [correctName];
+      
+      // 오답 옵션 중에서 무작위로 3개 선택
+      for (let i = 0; i < Math.min(3, wrongOptions.length); i++) {
+        let randomIndex;
+        let randomName;
+        
+        do {
+          randomIndex = Math.floor(Math.random() * wrongOptions.length);
+          randomName = wrongOptions[randomIndex];
+        } while (options.includes(randomName));
+        
+        options.push(randomName);
+      }
+      
+      // 옵션 순서 섞기
+      shuffleArray(options);
+      
+      // 옵션 버튼 생성
+      options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.textContent = option;
+        button.addEventListener('click', () => checkAnswer(option, correctName));
+        optionsContainer.appendChild(button);
+      });
+    }
+
+    // 배열 섞기 함수
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // 정답 확인
+    function checkAnswer(selectedName, correctName) {
+      // 타이머 중지
+      stopTimer();
+      
+      totalQuestions++;
+      totalElement.textContent = totalQuestions;
+      
+      const isCorrect = selectedName === correctName;
+      
+      // 점수 업데이트
+      if (isCorrect) {
+        score++;
+        scoreElement.textContent = score;
+      }
+      
+      // 결과 메시지 표시
+      resultElement.innerHTML = isCorrect ? 
+        '<div class="result-icon">✓</div><div class="result-text">정답입니다!</div>' : 
+        `<div class="result-icon">✗</div><div class="result-text">오답입니다. 정답은 ${correctName}입니다.</div>`;
+      resultElement.className = `result-container ${isCorrect ? 'correct' : 'wrong'}`;
+      
+      // 모든 버튼 비활성화 및 정답/오답 표시
+      const buttons = optionsContainer.querySelectorAll('.option-button');
+      buttons.forEach(button => {
+        if (button.textContent === correctName) {
+          button.classList.add('correct');
+        } else if (button.textContent === selectedName && !isCorrect) {
+          button.classList.add('wrong');
+        }
+        button.disabled = true;
+      });
+      
+      // 옵션 클릭 비활성화
+      optionsContainer.style.pointerEvents = 'none';
+      
+      // 다음 버튼 표시
+      nextButton.style.display = 'inline-block';
+    }
+
+    // 게임 결과 표시
+    function showGameResult() {
+      // 타이머 중지
+      stopTimer();
+      
+      const gameContainer = document.querySelector('.game-container');
+      const accuracy = Math.round((score / totalQuestions) * 100);
+      
+      let grade, message;
+      
+      if (accuracy >= 90) {
+        grade = "이탈리안 브레인롯 마스터";
+        message = "완벽해요! 진정한 이탈리안 브레인롯 전문가시군요! 🏆";
+      } else if (accuracy >= 70) {
+        grade = "이탈리안 브레인롯 애호가";
+        message = "꽤 잘하시네요! 이탈리안 브레인롯에 관심이 많으시군요! 👍";
+      } else if (accuracy >= 50) {
+        grade = "이탈리안 브레인롯 학습자";
+        message = "조금 더 공부하면 되겠어요! 이탈리안 브레인롯 입문자시군요! 📚";
+      } else {
+        grade = "이탈리안 브레인롯 새싹";
+        message = "이제 시작이에요! 이탈리안 브레인롯에 대해 더 알아보세요! 🌱";
+      }
+      
+      gameContainer.innerHTML = `
+        <div style="text-align: center; padding: 30px;">
+          <h2 style="margin-bottom: 30px; font-size: 2rem; background: var(--gradient-primary); -webkit-background-clip: text; background-clip: text; color: transparent;">🏆 게임 완료! 🏆</h2>
+          
+          <div class="result-score-container" style="
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+          ">
+            <div style="font-size: 1.4rem; margin-bottom: 10px; font-weight: 700;">
+              최종 점수: ${score}점 / ${totalQuestions}점
+            </div>
+            <div style="font-size: 1.2rem;">
+              정답률: ${accuracy}%
+            </div>
+            <div style="
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              width: ${accuracy}%;
+              height: 5px;
+              background-color: white;
+              border-radius: 0 5px 5px 0;
+            "></div>
+          </div>
+          
+          <div style="
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--color-accent);
+          ">
+            <div style="font-size: 1.5rem; font-weight: bold; color: var(--color-primary); margin-bottom: 15px;">
+              ${grade}
+            </div>
+            <div style="font-size: 1.1rem; color: var(--color-text);">
+              ${message}
+            </div>
+          </div>
+          
+          <button id="restart-button" style="
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+          " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.25)';" 
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.2)';">
+            다시 게임하기
+          </button>
+        </div>
+      `;
+      
+      // 다시 게임하기 버튼 이벤트
+      document.getElementById('restart-button').addEventListener('click', () => {
+        location.reload();
+      });
+    }
+
+    // 다음 버튼 클릭 이벤트
+    nextButton.addEventListener('click', nextCharacter);
+    
+    // 링크 공유하기 버튼 클릭 이벤트
+    document.getElementById('share-button').addEventListener('click', function() {
+      // 현재 URL 가져오기
+      const shareUrl = window.location.href;
+      
+      // 현재 점수 정보
+      const scoreText = `이탈리안 브레인 롯 퀴즈에서 ${score}점 / ${totalQuestions}점을 획득했어요!`;
+      
+      // 공유하기
+      const shareTitle = "이탈리안 브레인 롯 이름 맞추기";
+      const shareText = `${scoreText} 당신도 도전해보세요!`;
+      
+      // Web Share API 사용 (모바일에서 지원됨)
+      if (navigator.share) {
+        navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl
+        }).catch(err => {
+          // 공유 실패 시 URL 복사
+          copyToClipboard(shareUrl);
+          alert('URL이 복사되었습니다. 원하는 곳에 붙여넣어 공유하세요!');
+        });
+      } else {
+        // 웹 공유 API가 지원되지 않는 경우 URL 복사
+        copyToClipboard(shareUrl);
+        alert('URL이 복사되었습니다. 원하는 곳에 붙여넣어 공유하세요!');
+      }
+    });
+    
+    // 클립보드에 텍스트 복사 함수
+    function copyToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+
+    // 게임 시작
+    initGame();
+  </script>
+</body>
+</html>
