@@ -588,249 +588,52 @@
 
   <script>
     // 게임 데이터 (캐릭터 이름과 이미지 경로)
-    const characters = [
-      {
-        name: "팬다치니 바나니니",
-        image: "images/pandaccini-bananini.png"
-      },
-      {
-        name: "봄바르디로 크로코딜로",
-        image: "images/bombardiro-crocodilo.png"
-      },
-      {
-        name: "트랄랄레로 트랄랄라",
-        image: "images/tralalero-tralala.png"
-      },
-      {
-        name: "카를로오오오오오",
-        image: "images/carloooooo.png"
-      },
-      {
-        name: "치클레테이라 비시클레테이라",
-        image: "images/chicleteira-bicicleteira.png"
-      },
-      {
-        name: "오르칼레로 오르칼라",
-        image: "images/orcalero-orcala.png"
-      },
-      {
-        name: "알레시오오오오오오",
-        image: "images/alessioooooo.png"
-      },
-      {
-        name: "푸시니 스시니",
-        image: "images/pussini-sushini.png"
-      },
-      {
-        name: "마테오오오오오오오오",
-        image: "images/matteoooooooooo.png"
-      },
-      {
-        name: "퉁퉁 사후르",
-        image: "images/tung-tung-sahur.png"
-      },
-      {
-        name: "레오넬리 칵투셀리",
-        image: "images/leonelli-cactuselli.png"
-      },
-      {
-        name: "파스타 프린세스",
-        image: "images/4laa0cgsgl.png"
-      },
-      {
-        name: "피자 마에스트로",
-        image: "images/7yx05f58y5.png"
-      },
-      {
-        name: "리조또 레인저",
-        image: "images/gzu4rdtloj.png"
-      },
-      {
-        name: "젤라또 제너럴",
-        image: "images/hkn2ums0gx.png"
-      },
-      {
-        name: "비앙코 발레리나",
-        image: "images/kkvv57dwba.png"
-      },
-      {
-        name: "라비올리 로켓",
-        image: "images/mzc7oqmcuz.png"
-      },
-      {
-        name: "판나코타 파일럿",
-        image: "images/u61491ru85.png"
-      },
-      {
-        name: "티라미수 타이탄",
-        image: "images/vt63xqbksj.png"
-      },
-      {
-        name: "에스프레소 엘리트",
-        image: "images/xqsgb6qj6q.png"
-      },
-      {
-        name: "마르게리타 마법사",
-        image: "images/dzbwyj6dvg.png"
-      },
-      {
-        name: "바실리코 바론",
-        image: "images/62uyca49qa.png"
-      },
-      {
-        name: "프로슈토 프린스",
-        image: "images/qaun88xnp5.png"
-      },
-      {
-        name: "모차렐라 마스터",
-        image: "images/1k0nw3an97.png"
-      },
-      {
-        name: "페스토 팔라딘",
-        image: "images/ln49a68fck.png"
-      },
-      {
-        name: "칸노리 키테르",
-        image: "images/mmaq7hipt7.png"
-      },
-      {
-        name: "아마레토 아처",
-        image: "images/85r41w00yk.png"
-      },
-      {
-        name: "비스코티 배틀러",
-        image: "images/8nk6ucmpta.png"
-      },
-      {
-        name: "그라파 가디언",
-        image: "images/qrqhvxzrdi.png"
-      },
-      {
-        name: "올리바 오라클",
-        image: "images/9nc22h7eq9.png"
-      },
-      {
-        name: "파르미지아노 파이터",
-        image: "images/c1ukmdl0mj.png"
-      },
-      {
-        name: "브루스케타 브레이버",
-        image: "images/r9euo3r0b4.png"
-      },
-      {
-        name: "살라미 사무라이",
-        image: "images/wzv6m7sn27.png"
-      },
-      {
-        name: "카프레제 캡틴",
-        image: "images/j6fqabvwxc.png"
-      },
-      {
-        name: "아라비아타 에이스",
-        image: "images/8sm9hgt8uj.png"
-      },
-      {
-        name: "타르투포 타이탄",
-        image: "images/p5nd64sqs2.png"
-      },
-      {
-        name: "마스카포네 마샬",
-        image: "images/1338gy5wwf.png"
-      },
-      {
-        name: "프라기노 파이어",
-        image: "images/tv5dmvvijk.png"
-      },
-      {
-        name: "살비아 세이버",
-        image: "images/5a2xlajyqt.png"
-      },
-      {
-        name: "치콜리나 챔피언",
-        image: "images/v2l1hu0pl4.png"
-      },
-      {
-        name: "포르마지오 퓨전",
-        image: "images/mjy4rlkwcu.png"
-      },
-      {
-        name: "포모도로 파워",
-        image: "images/hxp4se1j5z.png"
-      },
-      {
-        name: "자스미노 자이언트",
-        image: "images/6rks4sa9c7.png"
-      },
-      {
-        name: "스파게티니 스타",
-        image: "images/5pkysidz66.png"
-      },
-      {
-        name: "리조토 라이더",
-        image: "images/m4ex9ynote.png"
-      },
-      {
-        name: "멜란자네 메이지",
-        image: "images/dip84wpmdj.png"
-      },
-      {
-        name: "파르미자노 팬텀",
-        image: "images/yo3276c08e.png"
-      },
-      {
-        name: "가르간쵸 건틀렛",
-        image: "images/wjoxm0076i.png"
-      },
-      {
-        name: "카프리시오 콘트롤러",
-        image: "images/eop507ru6p.png"
-      },
-      {
-        name: "올리브 오버로드",
-        image: "images/5kmo6dof2u.png"
-      },
-      {
-        name: "알돈테 아머",
-        image: "images/s7cw33kha8.png"
-      },
-      {
-        name: "팬체타 페이스",
-        image: "images/pnizsopcps.png"
-      },
-      {
-        name: "보스코 브레이커",
-        image: "images/oobiozmazh.png"
-      },
-      {
-        name: "칼초네 코만더",
-        image: "images/h1404n67zo.png"
-      },
-      {
-        name: "버샤멜 블레이드",
-        image: "images/ftlegigxy0.png"
-      },
-      {
-        name: "리코타 로드",
-        image: "images/py9wcx1vac.png"
-      },
-      {
-        name: "타바스코 타임로드",
-        image: "images/ccg855tgmc.png"
-      },
-      {
-        name: "모짜렐라 마스터",
-        image: "images/4509ub5f03.png"
-      },
-      {
-        name: "비앙코 보우",
-        image: "images/vg04fdxayg.png"
-      },
-      {
-        name: "프란체스코 프로텍터",
-        image: "images/lu4fpf9wtt.png"
-      }
-    ];
-
+   const characters = [
+  { name: "고릴로 워터멜론드릴로", image: "images/고릴로_워터멜론드릴로.png" },
+  { name: "그라이푸시 메두시", image: "images/그라이푸시_메두시.png" },
+  { name: "글로르보 프루토드릴로", image: "images/글로르보_프루토드릴로.png" },
+  { name: "레오넬리 칵투셀리", image: "images/레오넬리_칵투셀리.png" },
+  { name: "리노 토스트리노", image: "images/리노_토스트리노.png" },
+  { name: "마드레나 포모도로", image: "images/마드레나_포모도로.png" },
+  { name: "마렌티나 마란지노", image: "images/마렌티나_마란지노.png" },
+  { name: "마테오 크로코딜로", image: "images/마테오_크로코딜로.png" },
+  { name: "모짜렐라 마스터", image: "images/모짜렐라_마스터.png" },
+  { name: "무카레토 구스토토", image: "images/무카레토_구스토토.png" },
+  { name: "바질리코 스파게티니", image: "images/바질리코_스파게티니.png" },
+  { name: "바질리코 브라보", image: "images/바질리코_브라보.png" },
+  { name: "버팔로 키카모로", image: "images/버팔로_키카모로.png" },
+  { name: "비스코티 로얄", image: "images/비스코티_로얄.png" },
+  { name: "살라미 치즈모노", image: "images/살라미_치즈모노.png" },
+  { name: "살시차 스파다", image: "images/살시차_스파다.png" },
+  { name: "살시차 카를로", image: "images/살시차_카를로.png" },
+  { name: "스파게티니 도레미", image: "images/스파게티니_도레미.png" },
+  { name: "시칠리아나 보칼레", image: "images/시칠리아나_보칼레.png" },
+  { name: "아란치니 레드", image: "images/아란치니_레드.png" },
+  { name: "아마트리치아나 페페론치노", image: "images/아마트리치아나_페페론치노.png" },
+  { name: "아보카도 젤라또", image: "images/아보카도_젤라또.png" },
+  { name: "아쿠아 칼초네", image: "images/아쿠아_칼초네.png" },
+  { name: "알로에 파르페", image: "images/알로에_파르페.png" },
+  { name: "에그플랜트 베네딕트", image: "images/에그플랜트_베네딕트.png" },
+  { name: "에스프레소 도플로", image: "images/에스프레소_도플로.png" },
+  { name: "오르칼레로 오르칼라", image: "images/오르칼레로_오르칼라.png" },
+  { name: "오렌지 플라워", image: "images/오렌지_플라워.png" },
+  { name: "올리브 캡틴", image: "images/올리브_캡틴.png" },
+  { name: "카를로 마르치노", image: "images/카를로_마르치노.png" },
+  { name: "카프리치오사 파스타", image: "images/카프리치오사_파스타.png" },
+  { name: "칸놀리 키테르", image: "images/칸놀리_키테르.png" },
+  { name: "치즈루 피자루", image: "images/치즈루_피자루.png" },
+  { name: "치클레테이라 비시클레테이라", image: "images/치클레테이라_비시클레테이라.png" },
+  { name: "카펠리니 프레스토", image: "images/카펠리니_프레스토.png" },
+  { name: "타르투포 타이탄", image: "images/타르투포_타이탄.png" },
+  { name: "파니니 크로와상", image: "images/파니니_크로와상.png" },
+  { name: "파스타 프린세스", image: "images/파스타_프린세스.png" },
+  { name: "파르미지아노 파이터", image: "images/파르미지아노_파이터.png" },
+  { name: "파이브치즈 베네치아", image: "images/파이브치즈_베네치아.png" },
+  { name: "프로슈토 프린스", image: "images/프로슈토_프린스.png" },
+  { name: "프리마베라 엘레강스", image: "images/프리마베라_엘레강스.png" },
+  { name: "피치카토 오페라", image: "images/피치카토_오페라.png" },
+  { name: "피치카토 파르마", image: "images/피치카토_파르마.png" }
+];
     // 게임 변수
     let currentCharacterIndex = -1;
     let score = 0;
