@@ -1,1 +1,1 @@
-[{"id":"TASK-001","content":"모바일 화면 최적화","status":"in_progress","priority":"high"}]
+[{"id":"ANALYZE-CURRENT","content":"스마트폰 호환성을 위해 현재 게임 디자인 분석","status":"completed","priority":"high"},{"id":"ADD-MEDIA-QUERY","content":"모바일 기기에 대한 반응형 디자인 CSS 추가","status":"completed","priority":"high"},{"id":"ADJUST-LAYOUT","content":"화면 크기에 따른 이미지 및 버튼 크기 조정","status":"completed","priority":"high"},{"id":"TEST-MOBILE","content":"스마트폰 호환성 테스트","status":"completed","priority":"medium"},{"id":"FINAL-ADJUSTMENTS","content":"최종 모바일 화면 조정","status":"completed","priority":"medium"}]

@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#34495e">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>이탈리안 브레인 롯 이름 맞추기 게임</title>
   <style>
     :root {
@@ -444,27 +446,30 @@
       }
       
       .character-image {
-        max-width: 200px;
-        /* 모바일에서는 더 작은 값으로 설정 */
-        clip-path: inset(15% 0 0 0);
-        margin-top: -8%;
+        max-width: 240px;
+        width: 100%;
+        clip-path: inset(8% 0 0 0);
+        margin-top: -4%;
       }
       
       .character-container {
         margin-bottom: 10px;
-        height: 220px;
+        height: 260px;
       }
       
       .options-container {
-        gap: 6px;
-        margin-top: 10px;
+        gap: 12px;
+        margin-top: 15px;
         min-height: auto;
+        grid-template-columns: 1fr;
       }
       
       .option-button {
-        padding: 10px 5px;
-        font-size: 0.75rem;
-        min-height: 40px;
+        padding: 14px 10px;
+        font-size: 0.9rem;
+        min-height: 50px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
       }
       
       .timer-container {
@@ -485,25 +490,27 @@
       
       .share-button {
         font-size: 0.8rem;
-        padding: 5px 10px;
+        padding: 8px 15px;
       }
       
       .share-container {
-        margin-top: 8px;
-        margin-bottom: 6px;
+        margin-top: 10px;
+        margin-bottom: 8px;
       }
       
       .result-container {
-        margin-top: 3px;
-        padding: 5px;
-        font-size: 0.8rem;
+        margin-top: 8px;
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 0.85rem;
+        border-radius: 10px;
       }
       
       .next-button {
-        padding: 8px 15px;
-        font-size: 0.85rem;
-        margin-top: 6px;
-        margin-bottom: 6px;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        margin-bottom: 10px;
       }
     }
     
@@ -518,17 +525,34 @@
       }
       
       .character-container {
-        height: 180px;
+        height: 220px;
       }
       
       .character-image {
-        max-width: 170px;
+        max-width: 200px;
       }
       
       .option-button {
-        padding: 8px 4px;
+        padding: 12px 8px;
+        font-size: 0.85rem;
+        min-height: 46px;
+        font-weight: 700;
+      }
+      
+      .result-container {
+        font-size: 0.8rem;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+      
+      .timer-setting select {
         font-size: 0.7rem;
-        min-height: 36px;
+        padding: 2px 3px;
+      }
+      
+      .share-button {
+        width: 90%;
+        margin: 0 auto;
       }
     }
   </style>
@@ -588,52 +612,185 @@
 
   <script>
     // 게임 데이터 (캐릭터 이름과 이미지 경로)
-   const characters = [
-  { name: "고릴로 워터멜론드릴로", image: "images/고릴로_워터멜론드릴로.png" },
-  { name: "그라이푸시 메두시", image: "images/그라이푸시_메두시.png" },
-  { name: "글로르보 프루토드릴로", image: "images/글로르보_프루토드릴로.png" },
-  { name: "레오넬리 칵투셀리", image: "images/레오넬리_칵투셀리.png" },
-  { name: "리노 토스트리노", image: "images/리노_토스트리노.png" },
-  { name: "마드레나 포모도로", image: "images/마드레나_포모도로.png" },
-  { name: "마렌티나 마란지노", image: "images/마렌티나_마란지노.png" },
-  { name: "마테오 크로코딜로", image: "images/마테오_크로코딜로.png" },
-  { name: "모짜렐라 마스터", image: "images/모짜렐라_마스터.png" },
-  { name: "무카레토 구스토토", image: "images/무카레토_구스토토.png" },
-  { name: "바질리코 스파게티니", image: "images/바질리코_스파게티니.png" },
-  { name: "바질리코 브라보", image: "images/바질리코_브라보.png" },
-  { name: "버팔로 키카모로", image: "images/버팔로_키카모로.png" },
-  { name: "비스코티 로얄", image: "images/비스코티_로얄.png" },
-  { name: "살라미 치즈모노", image: "images/살라미_치즈모노.png" },
-  { name: "살시차 스파다", image: "images/살시차_스파다.png" },
-  { name: "살시차 카를로", image: "images/살시차_카를로.png" },
-  { name: "스파게티니 도레미", image: "images/스파게티니_도레미.png" },
-  { name: "시칠리아나 보칼레", image: "images/시칠리아나_보칼레.png" },
-  { name: "아란치니 레드", image: "images/아란치니_레드.png" },
-  { name: "아마트리치아나 페페론치노", image: "images/아마트리치아나_페페론치노.png" },
-  { name: "아보카도 젤라또", image: "images/아보카도_젤라또.png" },
-  { name: "아쿠아 칼초네", image: "images/아쿠아_칼초네.png" },
-  { name: "알로에 파르페", image: "images/알로에_파르페.png" },
-  { name: "에그플랜트 베네딕트", image: "images/에그플랜트_베네딕트.png" },
-  { name: "에스프레소 도플로", image: "images/에스프레소_도플로.png" },
-  { name: "오르칼레로 오르칼라", image: "images/오르칼레로_오르칼라.png" },
-  { name: "오렌지 플라워", image: "images/오렌지_플라워.png" },
-  { name: "올리브 캡틴", image: "images/올리브_캡틴.png" },
-  { name: "카를로 마르치노", image: "images/카를로_마르치노.png" },
-  { name: "카프리치오사 파스타", image: "images/카프리치오사_파스타.png" },
-  { name: "칸놀리 키테르", image: "images/칸놀리_키테르.png" },
-  { name: "치즈루 피자루", image: "images/치즈루_피자루.png" },
-  { name: "치클레테이라 비시클레테이라", image: "images/치클레테이라_비시클레테이라.png" },
-  { name: "카펠리니 프레스토", image: "images/카펠리니_프레스토.png" },
-  { name: "타르투포 타이탄", image: "images/타르투포_타이탄.png" },
-  { name: "파니니 크로와상", image: "images/파니니_크로와상.png" },
-  { name: "파스타 프린세스", image: "images/파스타_프린세스.png" },
-  { name: "파르미지아노 파이터", image: "images/파르미지아노_파이터.png" },
-  { name: "파이브치즈 베네치아", image: "images/파이브치즈_베네치아.png" },
-  { name: "프로슈토 프린스", image: "images/프로슈토_프린스.png" },
-  { name: "프리마베라 엘레강스", image: "images/프리마베라_엘레강스.png" },
-  { name: "피치카토 오페라", image: "images/피치카토_오페라.png" },
-  { name: "피치카토 파르마", image: "images/피치카토_파르마.png" }
-];
+    const characters = [
+      {
+        name: "에스프레소나 시뇨라",
+        image: "new_images/에스프레소나_시뇨라.png"
+      },
+      {
+        name: "발레리노 로로로",
+        image: "new_images/발레리노_로로로.png"
+      },
+      {
+        name: "엘레판투치 바나누치",
+        image: "new_images/엘레판투치_바나누치.png"
+      },
+      {
+        name: "레오넬리 칵투셀리",
+        image: "new_images/레오넬리_칵투셀리.png"
+      },
+      {
+        name: "시그마 보이",
+        image: "new_images/시그마_보이.png"
+      },
+      {
+        name: "오랑구티니 아나나시니",
+        image: "new_images/오랑구티니_아나나시니.png"
+      },
+      {
+        name: "그라이푸시 메두시",
+        image: "new_images/그라이푸시_메두시.png"
+      },
+      {
+        name: "리노 토스트리노",
+        image: "new_images/리노_토스트리노.png"
+      },
+      {
+        name: "붐바르디로 크로코딜로",
+        image: "new_images/붐바르디로_크로코딜로.png"
+      },
+      {
+        name: "부르발로니 룰릴롤리",
+        image: "new_images/부르발로니_룰릴롤리.png"
+      },
+      {
+        name: "고릴로 워터멜론드릴로",
+        image: "new_images/고릴로_워터멜론드릴로.png"
+      },
+      {
+        name: "글로르보 프루토드릴로",
+        image: "new_images/글로르보_프루토드릴로.png"
+      },
+      {
+        name: "마테오오오오오오오",
+        image: "new_images/마테오오오오오오오.png"
+      },
+      {
+        name: "바나니타 돌피니타",
+        image: "new_images/바나니타_돌피니타.png"
+      },
+      {
+        name: "보브리토 반디토",
+        image: "new_images/보브리토_반디토.png"
+      },
+      {
+        name: "브리 브리 비쿠스 디쿠스 봄비쿠스",
+        image: "new_images/브리_브리_비쿠스_디쿠스_봄비쿠스.png"
+      },
+      {
+        name: "블루베리니 옥토푸시니",
+        image: "new_images/블루베리니_옥토푸시니.png"
+      },
+      {
+        name: "스비니노 봄본디노",
+        image: "new_images/스비니노_봄본디노.png"
+      },
+      {
+        name: "알레시오오오오오",
+        image: "new_images/알레시오오오오오.png"
+      },
+      {
+        name: "알레시오오오오오오",
+        image: "new_images/알레시오오오오오오.png"
+      },
+      {
+        name: "오르칼레로 오르칼라",
+        image: "new_images/오르칼레로_오르칼라.png"
+      },
+      {
+        name: "일 각토 히포포타모",
+        image: "new_images/일_각토_히포포타모.png"
+      },
+      {
+        name: "카라마라라마라라만 단 마두둥둥 탁 툰퉁 퍼르쿤퉁",
+        image: "new_images/카라마라라마라라만_단_마두둥둥_탁_툰퉁_퍼르쿤퉁.png"
+      },
+      {
+        name: "치클레테이라 비시클레테이라",
+        image: "new_images/치클레테이라_비시클레테이라.png"
+      },
+      {
+        name: "지브라 주브라 지브라리니",
+        image: "new_images/지브라_주브라_지브라리니.png"
+      },
+      {
+        name: "카를로오오오오오",
+        image: "new_images/카를로오오오오오.png"
+      },
+      {
+        name: "코코판토 엘라판토",
+        image: "new_images/코코판토_엘라판토.png"
+      },
+      {
+        name: "크로코딜로 아나나시노",
+        image: "new_images/크로코딜로_아나나시노.png"
+      },
+      {
+        name: "크로크딜로 아나나시노",
+        image: "new_images/크로크딜로_아나나시노.png"
+      },
+      {
+        name: "팟 핫스팟",
+        image: "new_images/팟_핫스팟.png"
+      },
+      {
+        name: "타타타타타타타 사후르",
+        image: "new_images/타타타타타타타_사후르.png"
+      },
+      {
+        name: "토르투기니 드레곤푸루티니",
+        image: "new_images/토르투기니_드레곤푸루티니.png"
+      },
+      {
+        name: "톱 토비 톱 톱 토비 톱",
+        image: "new_images/톱_토비_톱_톱_토비_톱.png"
+      },
+      {
+        name: "트랄랄레로 트랄랄라",
+        image: "new_images/트랄랄레로_트랄랄라.png"
+      },
+      {
+        name: "트레코투코툴루 델라펠라두스투즈",
+        image: "new_images/트레코투코툴루_델라펠라두스투즈.png"
+      },
+      {
+        name: "티그룰리니 워터멜리니",
+        image: "new_images/티그룰리니_워터멜리니.png"
+      },
+      {
+        name: "트릭 트랙 바라붐",
+        image: "new_images/트릭_트랙_바라붐.png"
+      },
+      {
+        name: "티그룰리 그레이프루투니",
+        image: "new_images/티그룰리_그레이프루투니.png"
+      },
+      {
+        name: "트리파 트로파 트랄랄라 리릴리 릴라 퉁퉁 사후르 보네카 퉁퉁 트랄레로 트로파 크로코디나",
+        image: "new_images/트리파_트로파_트랄랄라_리릴리_릴라_퉁퉁_사후르_보네카_퉁퉁_트랄레로_트로파_크로코디나.png"
+      },
+      {
+        name: "티티티티티티티 사후르",
+        image: "new_images/티티티티티티티_사후르.png"
+      },
+      {
+        name: "펜다치니 바나니니",
+        image: "new_images/펜다치니_바나니니.png"
+      },
+      {
+        name: "푸시니 스시니",
+        image: "new_images/푸시니_스시니.png"
+      },
+      {
+        name: "펭구원노 코코시노",
+        image: "new_images/펭구원노_코코시노.png"
+      },
+      {
+        name: "프룰리 프룰라",
+        image: "new_images/프룰리_프룰라.png"
+      }
+    ];
+
     // 게임 변수
     let currentCharacterIndex = -1;
     let score = 0;
@@ -1006,7 +1163,7 @@
     // 링크 공유하기 버튼 클릭 이벤트
     document.getElementById('share-button').addEventListener('click', function() {
       // 현재 URL 가져오기
-      const shareUrl = "https://dynamicjm.tistory.com/entry/%EC%9D%B4%ED%83%88%EB%A6%AC%EC%95%88-%EB%B8%8C%EB%A0%88%EC%9D%B8-%EB%A1%AFItalian-Brainrot-%EC%9D%B4%EB%A6%84%EB%A7%9E%EC%B6%94%EA%B8%B0-%EA%B2%8C%EC%9E%84";
+      const shareUrl = window.location.href;
       
       // 현재 점수 정보
       const scoreText = `이탈리안 브레인 롯 퀴즈에서 ${score}점 / ${totalQuestions}점을 획득했어요!`;
